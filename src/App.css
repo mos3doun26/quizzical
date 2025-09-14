@@ -54,6 +54,7 @@ a {
 main {
     max-width: 700px;
     margin: 0 auto;
+    padding: 1em;
 }
 
 /* Home Page */
@@ -117,6 +118,7 @@ input[type='radio'] {
 
 .answers {
     display: flex;
+    flex-wrap: wrap;
     gap: 1em;
 }
 
@@ -212,4 +214,11 @@ input[type='radio'] {
 /* fail to fetch questions */
 .fail-to-fetch p {
     font-size: 1.5rem;
+}
+
+/* media quries */
+@media (max-width: 480px) {
+    .score-info {
+        flex-direction: column;
+    }
 }
