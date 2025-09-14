@@ -19,7 +19,7 @@ function App() {
   }
 
   const resultPageConent = answers.length > 0 ?
-    <Result questions={questions} answers={answers} /> :
+    <Result questions={questions} answers={answers} handleAnswers={handleAnswers} /> :
     <NotFound resultPage={true} />
 
   return (

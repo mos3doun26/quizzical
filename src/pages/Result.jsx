@@ -2,9 +2,8 @@ import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { useNavigate } from 'react-router-dom'
 import preLoader from '../assets/infinite-spinner.svg'
-import { preload } from "react-dom"
 
-export default function Result({ questions, answers }) {
+export default function Result({ questions, answers, handleAnswers }) {
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
 
@@ -46,6 +45,11 @@ export default function Result({ questions, answers }) {
         )
     })
 
+    function playAgain() {
+        handleAnswers([])
+        goToQuizPage()
+    }
+
     return (
         <main className="result">
             {loading ?
@@ -57,7 +61,7 @@ export default function Result({ questions, answers }) {
                     {questionsElements}
                     <div className="score-info">
                         <p>You Scored {countCorrectAnswer()}/5 correct answers</p>
-                        <button onClick={() => goToQuizPage()} className="btn play-again-btn">Play again</button>
+                        <button onClick={() => playAgain()} className="btn play-again-btn">Play again</button>
                     </div>
                 </>
 
