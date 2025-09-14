@@ -59,7 +59,8 @@ main {
 /* Home Page */
 .home,
 .not-found,
-.preloader {
+.preloader,
+.fail-to-fetch {
     display: flex;
     gap: 1.5em;
     flex-direction: column;
@@ -141,6 +142,7 @@ input[type='radio'] {
     display: block;
     margin: 2em auto;
     padding: 1em 2em;
+    font-size: 1rem;
 }
 
 .error {
@@ -190,8 +192,10 @@ input[type='radio'] {
     font-size: 1.25rem;
 }
 
-.play-again-btn {
+.play-again-btn,
+.fail-to-fetch-btn {
     padding: 1em 2em;
+    font-size: 1rem;
 }
 
 
@@ -202,5 +206,10 @@ input[type='radio'] {
 }
 
 .preloader span {
+    font-size: 1.5rem;
+}
+
+/* fail to fetch questions */
+.fail-to-fetch p {
     font-size: 1.5rem;
 }

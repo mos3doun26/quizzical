@@ -7,6 +7,8 @@ import { useForm } from 'react-hook-form';
 
 export default function Quiz({ handleQuestions, handleAnswers }) {
     const [fetchedQuestions, setFetchedQuestions] = useState([])
+    const [error, setError] = useState(false)
+
     const {
         register,
         handleSubmit,
@@ -15,18 +17,35 @@ export default function Quiz({ handleQuestions, handleAnswers }) {
 
     const navigate = useNavigate()
 
-    let stop = false
-
     useEffect(() => {
-        fetch("https://opentdb.com/api.php?amount=5&type=multiple")
-            .then(res => res.json())
-            .then(data => {
-                if (!stop) {
-                    fetchData(data)
-                    shuffleAnswers()
-                    stop = true
+        const controller = new AbortController()
+
+        const fetchQuestions = async () => {
+            try {
+                const res = await fetch("https://opentdb.com/api.php?amount=5&type=multiple", {
+                    signal: controller.signal
+                })
+
+                if (!res.ok) throw new Error("fail to fetch questions")
+
+                const data = await res.json()
+                fetchData(data)
+                shuffleAnswers()
+                setError(false)
+
+
+            } catch (err) {
+                if (err.name !== "AbortError") {
+                    console.error(err)
+                    setError(true)
                 }
-            })
+            }
+        }
+
+        fetchQuestions()
+
+        // clean up
+        return () => controller.abort()
     }, [])
 
     useEffect(() => {
@@ -65,17 +84,25 @@ export default function Quiz({ handleQuestions, handleAnswers }) {
 
     return (
         <main className="quize">
-            <form onSubmit={handleSubmit(handleFormData)}>
-                {
-                    fetchedQuestions.length > 0 ?
-                        fetchedQuestions.map((question, index) => <Question key={index} question={question} register={register} error={errors[question.id]} />) :
-                        <div className="preloader">
-                            <img alt="preloader" src={preLoader} />
-                            <span>Loading your quize...</span>
-                        </div>
-                }
-                {fetchedQuestions.length > 0 && <button className='btn check-answers-btn'>Check answers</button>}
-            </form>
+            {
+                error ?
+                    <div className='fail-to-fetch'>
+                        <p>Fail to fetch questions</p>
+                        <button onClick={() => setError(false)} className='btn fail-to-fetch-btn'>Retry</button>
+                    </div> :
+                    <form onSubmit={handleSubmit(handleFormData)}>
+                        {
+                            fetchedQuestions.length > 0 ?
+                                fetchedQuestions.map((question, index) => <Question key={index} question={question} register={register} error={errors[question.id]} />) :
+                                <div className="preloader">
+                                    <img alt="preloader" src={preLoader} />
+                                    <span>Loading your quize...</span>
+                                </div>
+                        }
+                        {fetchedQuestions.length > 0 && <button className='btn check-answers-btn'>Check answers</button>}
+                    </form>
+            }
+
         </main>
     )
 }
