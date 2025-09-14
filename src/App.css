@@ -143,6 +143,11 @@ input[type='radio'] {
     padding: 1em 2em;
 }
 
+.error {
+    margin: 1em 0 0 1em;
+    color: #c1121f;
+}
+
 /* Not Found Page */
 .not-found {
     font-size: 2rem;

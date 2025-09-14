@@ -3,10 +3,16 @@ import Question from "../Question";
 import { useNavigate } from 'react-router-dom';
 import { decode } from 'html-entities';
 import preLoader from '../assets/infinite-spinner.svg'
-
+import { useForm } from 'react-hook-form';
 
 export default function Quiz({ handleQuestions, handleAnswers }) {
     const [fetchedQuestions, setFetchedQuestions] = useState([])
+    const {
+        register,
+        handleSubmit,
+        formState: { errors }
+    } = useForm()
+
     const navigate = useNavigate()
 
     let stop = false
@@ -39,9 +45,8 @@ export default function Quiz({ handleQuestions, handleAnswers }) {
                 }
             ))
         })
-
-
     }
+
     function shuffleAnswers() {
         setFetchedQuestions(prev => prev.map(question => (
             { ...question, randAnswersArrangement: [...question.incorrectAnswers, question.correctAnswer].sort(() => Math.random() - 0.5) }
@@ -53,19 +58,17 @@ export default function Quiz({ handleQuestions, handleAnswers }) {
     }
 
     function handleFormData(formData) {
-        let answers = []
-        formData.forEach(item => answers.push(item))
-        // console.log(answers)
+        const answers = Object.values(formData)
         handleAnswers(answers)
         goToResultPage()
     }
 
     return (
         <main className="quize">
-            <form action={handleFormData}>
+            <form onSubmit={handleSubmit(handleFormData)}>
                 {
                     fetchedQuestions.length > 0 ?
-                        fetchedQuestions.map((question, index) => <Question key={index} question={question} />) :
+                        fetchedQuestions.map((question, index) => <Question key={index} question={question} register={register} error={errors[question.id]} />) :
                         <div className="preloader">
                             <img alt="preloader" src={preLoader} />
                             <span>Loading your quize...</span>
